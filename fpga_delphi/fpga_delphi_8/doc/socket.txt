@@ -1,0 +1,8 @@
+1.阻塞模式编程建议用INDY的IDTCPCLIENT   IDTCPSERVER
+2.非阻塞模式建议用D6中的CLIENTSOCKET   SERVERSOCKET，D7中可以通过   COMPONENT->
+    INSTALL   PACKAGES－> add-> DELPH7\BIN\DCLSOCKETS70.BPL来添加。
+3。TCPCLIENT,TCPSERVER在D7中的DEMOS是用的阻塞模式，当客户端连接后建立了线程来处理和客户端的通讯问题。BLOCKMODE:=BMTHREADBLOCKING;
+4。TCPCLIENT,TCPSERVER也可以工作在非阻塞模式,BLOCKMODE:=BMNOBLOCKING；这样就象CLIENTSOCKET   SERVERSOCKET了，但是TCPCLIENT   可以象CLIENTSOCKET一样又ONREAD,ONWRITE，而TCPSERVER确没有看到象SERVERSOCKET那样的ONCLIENTREAD,ONCLIENTREAD.
+5.查看TCPSERVER的源代码，发现他和TCPCLIENT一样最终是继承于TBaseSocket的，那么应该也可以有ONREAD,ONWRITE。
+6。如果我们象TCPCLIENT那样作个procedure   TcpServerReceive(Sender:   TObject;   Buf:   PAnsiChar;     var   DataLen:   Integer)，你面写处理代码，然后TCPSERVER1.OnReceive:=TcpServerReceive;   OnSend也如此类推，应该就可以了。
+7。这个方法没有测试，但原理是这样的，只不过TCPSERVER的OnReceive,OnSend在设计时看不到而已，不等于他没有。 
